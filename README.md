@@ -24,6 +24,18 @@ whenever an issuer pays a dividend or splits, so an adjusted table
 can't be append-only. Raw prices never change, which keeps reloads
 genuinely idempotent.
 
+**Error handling:** `src/fetch.py` distinguishes three failure modes —
+bad symbol, rate limit, no trading days in range — as separate
+exception types, so callers can retry, skip, or no-op appropriately.
+This required going around yfinance's default behavior, which swallows
+all three into a warning plus an empty DataFrame
+(`yf.config.debug.hide_exceptions = False` turns that off). It also
+required catching `curl_cffi`'s `HTTPError`, not `requests`' — yfinance
+1.6.0 uses `curl_cffi` for its HTTP layer internally, so a bad-symbol
+404 surfaces as `curl_cffi.requests.exceptions.HTTPError`, a different
+class from the one in the standard `requests` library despite the
+matching name and interface.
+
 ## Status
 
-Phase 0 (setup) complete.
+Phase 0 (setup) and Phase 1 (single-symbol fetch) complete.

@@ -1,6 +1,15 @@
+# Local Python virtual environment
 .venv/
+
+# Environment variables and local secrets
 .env
+
+# Local SQLite database files
 data/*.db
+
+# Python cache directories and compiled bytecode
 __pycache__/
 *.pyc
+
+# macOS Finder metadata
 .DS_Store
