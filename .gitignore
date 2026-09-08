@@ -13,3 +13,6 @@ __pycache__/
 
 # macOS Finder metadata
 .DS_Store
+
+# Editor-local settings
+.vscode/
