@@ -23,3 +23,10 @@ CREATE TABLE IF NOT EXISTS corporate_actions (
     value       REAL NOT NULL,
     PRIMARY KEY (symbol, date, action_type)
 );
+
+CREATE TABLE IF NOT EXISTS backfill_status (
+    symbol              TEXT PRIMARY KEY REFERENCES securities(symbol),
+    status              TEXT NOT NULL CHECK (status IN ('pending', 'in_progress', 'completed', 'failed')),
+    last_backfill_date  TEXT NOT NULL,
+    last_error          TEXT
+);
