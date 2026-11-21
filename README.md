@@ -38,6 +38,8 @@ matching name and interface.
 
 ## Status
 
-Phase 0 (setup), Phase 1 (single-symbol fetch), and Phase 2 (schema,
-loaders, and resumable backfill) complete. `data/market.db` holds
-full 5-year history for all 101 S&P 100 constituents (~125k price rows).
+Phase 0 (setup), Phase 1 (single-symbol fetch), Phase 2 (schema,
+loaders, and resumable backfill), and Phase 3 (data-quality checks)
+complete. `data/market.db` holds full 5-year history for all 101
+S&P 100 constituents (~125k price rows), and `src/quality.py` runs
+clean against it.
