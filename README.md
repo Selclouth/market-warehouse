@@ -38,4 +38,6 @@ matching name and interface.
 
 ## Status
 
-Phase 0 (setup) and Phase 1 (single-symbol fetch) complete.
+Phase 0 (setup), Phase 1 (single-symbol fetch), and Phase 2 (schema,
+loaders, and resumable backfill) complete. `data/market.db` holds
+full 5-year history for all 101 S&P 100 constituents (~125k price rows).
