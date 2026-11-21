@@ -4,6 +4,20 @@ ETL pipeline and equity screener. Ingests daily OHLCV for the S&P 100
 into SQLite, runs data-quality checks, and builds momentum/volatility
 screens with SQL window functions.
 
+## Dashboard
+
+```
+streamlit run src/dashboard.py
+```
+
+Interactive Streamlit app (opens at http://localhost:8501) with four tabs:
+a risk-vs-return scatter of momentum against volatility for the whole
+universe, the full momentum ranking, price paths indexed to 100 over the
+lookback window, and the data-quality checks plus per-symbol coverage.
+Momentum lookback and volatility window are adjustable in the sidebar.
+Chart data comes from `src/analytics.py`, which reuses the SQL screens
+and quality checks and is covered by `tests/test_analytics.py`.
+
 ## Decisions
 
 **Universe:** S&P 100, 5 years daily (~126k rows). Note this list is
@@ -51,13 +65,13 @@ matching name and interface.
 ## Status
 
 Phase 0 (setup), Phase 1 (single-symbol fetch), Phase 2 (schema,
-loaders, and resumable backfill), Phase 3 (data-quality checks), and
-Phase 4 (momentum/volatility screens) complete. `data/market.db` holds
+loaders, and resumable backfill), Phase 3 (data-quality checks),
+Phase 4 (momentum/volatility screens), and Phase 5 (dashboard) complete. `data/market.db` holds
 full 5-year history for all 101 S&P 100 constituents (~125k price
 rows), `src/quality.py` runs clean against it, and `src/screens.py`
 ranks the universe by trailing momentum and realized volatility.
 
-Test suite (`pytest`, 33 tests) covers fetch error handling and ticker
+Test suite (`pytest`, 39 tests) covers fetch error handling and ticker
 normalization, loader upserts, backfill's incremental resume logic,
 every data-quality check, and the momentum/volatility SQL against
 independently-computed expected values. Network calls are mocked;

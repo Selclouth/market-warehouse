@@ -14,14 +14,20 @@ def load_screens(path: Path = SCREENS_PATH) -> dict[str, str]:
     return dict(zip(parts[0::2], parts[1::2]))
 
 
-def momentum_screen(conn: sqlite3.Connection, lookback_days: int = 252, top_n: int = 10):
+def _fetch(cur: sqlite3.Cursor, top_n: int | None) -> list[tuple]:
+    return cur.fetchall() if top_n is None else cur.fetchmany(top_n)
+
+
+def momentum_screen(conn: sqlite3.Connection, lookback_days: int = 252, top_n: int | None = 10):
+    """top_n=None returns the whole ranked universe."""
     sql = load_screens()["momentum"].format(lookback_days=lookback_days)
-    return conn.execute(sql).fetchmany(top_n)
+    return _fetch(conn.execute(sql), top_n)
 
 
-def volatility_screen(conn: sqlite3.Connection, window_days: int = 63, top_n: int = 10):
+def volatility_screen(conn: sqlite3.Connection, window_days: int = 63, top_n: int | None = 10):
+    """top_n=None returns the whole ranked universe."""
     sql = load_screens()["volatility"].format(window_days=window_days)
-    return conn.execute(sql).fetchmany(top_n)
+    return _fetch(conn.execute(sql), top_n)
 
 
 def print_rows(title: str, columns: list[str], rows: list[tuple]) -> None:
