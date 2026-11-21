@@ -37,6 +37,23 @@ JOIN calendar c ON c.date BETWEEN sr.start_date AND sr.end_date
 LEFT JOIN daily_prices dp ON dp.symbol = sr.symbol AND dp.date = c.date
 WHERE dp.symbol IS NULL;
 
+-- name: stale_symbols
+-- Symbols whose most recent loaded date lags behind the warehouse's overall
+-- latest date. missing_trading_days only catches gaps inside a symbol's
+-- existing range, so a symbol that's simply behind (e.g. a row dropped for
+-- an unsettled close, then marked completed before the gap was filled)
+-- wouldn't otherwise be flagged.
+--
+-- Written as a scalar subquery rather than a CTE cross-joined against
+-- daily_prices: SQLite's planner didn't materialize that CTE here and
+-- instead re-ran the MAX(date) scan once per row (O(n^2) -- 125k^2 -- hung
+-- for minutes on this table). The scalar subquery form is correctly
+-- evaluated once (confirmed via EXPLAIN QUERY PLAN: "SCALAR SUBQUERY").
+SELECT symbol, MAX(date) AS symbol_latest
+FROM daily_prices
+GROUP BY symbol
+HAVING MAX(date) < (SELECT MAX(date) FROM daily_prices);
+
 -- name: unexplained_price_jumps
 -- Single-day moves bigger than 50% with no matching corporate action
 -- recorded for that symbol and date. yfinance's close is already
