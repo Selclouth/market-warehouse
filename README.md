@@ -56,3 +56,9 @@ Phase 4 (momentum/volatility screens) complete. `data/market.db` holds
 full 5-year history for all 101 S&P 100 constituents (~125k price
 rows), `src/quality.py` runs clean against it, and `src/screens.py`
 ranks the universe by trailing momentum and realized volatility.
+
+Test suite (`pytest`, 33 tests) covers fetch error handling and ticker
+normalization, loader upserts, backfill's incremental resume logic,
+every data-quality check, and the momentum/volatility SQL against
+independently-computed expected values. Network calls are mocked;
+tests run against an in-memory SQLite db built from `sql/schema.sql`.

@@ -10,6 +10,7 @@ data/*.db
 # Python cache directories and compiled bytecode
 __pycache__/
 *.pyc
+.pytest_cache/
 
 # macOS Finder metadata
 .DS_Store
