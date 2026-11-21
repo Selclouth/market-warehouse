@@ -38,9 +38,11 @@ LEFT JOIN daily_prices dp ON dp.symbol = sr.symbol AND dp.date = c.date
 WHERE dp.symbol IS NULL;
 
 -- name: unexplained_price_jumps
--- Single-day moves bigger than 50% with no matching split/dividend recorded
--- for that symbol and date. A real jump that size is almost always a split
--- that should have been captured in corporate_actions.
+-- Single-day moves bigger than 50% with no matching corporate action
+-- recorded for that symbol and date. yfinance's close is already
+-- split-adjusted at the source (see README), so a real split shouldn't
+-- produce a jump at all; a jump this size with no recorded action is more
+-- likely a bad print or missing data than an uncaptured split.
 WITH changes AS (
     SELECT
         symbol,
